@@ -1,6 +1,7 @@
+import time
 import pygame
 import pyautogui
-import time
+import keyboard
 
 # Inicializar Pygame
 pygame.init()
@@ -19,12 +20,12 @@ BLACK = (0, 0, 0)
 pygame.mixer.init()
 
 # Cargar sonidos (puedes cambiar los archivos de sonido según tus preferencias)
-sound1 = pygame.mixer.Sound('sounds\Alarm01.wav')
-sound2 = pygame.mixer.Sound('sounds\Alarm02.wav')
-sound3 = pygame.mixer.Sound('sounds\Alarm03.wav')
-sound4 = pygame.mixer.Sound('sounds\Alarm04.wav')
-sound5 = pygame.mixer.Sound('sounds\Alarm05.wav')
-sound6 = pygame.mixer.Sound('sounds\Alarm06.wav')
+sound1 = pygame.mixer.Sound('sounds/Alarm01.wav')
+sound2 = pygame.mixer.Sound('sounds/Alarm02.wav')
+sound3 = pygame.mixer.Sound('sounds/Alarm03.wav')
+sound4 = pygame.mixer.Sound('sounds/Alarm04.wav')
+sound5 = pygame.mixer.Sound('sounds/Alarm05.wav')
+sound6 = pygame.mixer.Sound('sounds/Alarm06.wav')
 
 # Definir las secciones de la pantalla
 section_width = screen_width // 3
@@ -60,6 +61,15 @@ def play_sound(section):
     elif section == 6:
         sound6.play()
 
+def take_screenshot(x, y, section_width, section_height):
+    left = (x // section_width) * section_width
+    top = (y // section_height) * section_height
+    width = section_width
+    height = section_height
+    screenshot = pyautogui.screenshot(region=(left, top, width, height))
+    #screenshot.save(f'screenshot_{int(time.time())}.png')
+    screenshot.save(f'screenshot/screenshot_2.png')
+
 running = True
 last_section = 0
 
@@ -67,6 +77,12 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+
+    # Detectar combinación de teclas Ctrl+Shift+S para tomar captura de pantalla
+    if keyboard.is_pressed('ctrl+shift+s'):
+        x, y = pyautogui.position()
+        take_screenshot(x, y, section_width, section_height)
+        print("Captura de pantalla tomada.")
 
     # Obtener la posición actual del mouse
     x, y = pyautogui.position()
@@ -88,17 +104,17 @@ while running:
     for i in range(1, 7):
         text = font.render(str(i), True, BLACK)
         if i == 1:
-            screen.blit(text, (section_width//2 - text.get_width()//2, section_height//2 - text.get_height()//2))
+            screen.blit(text, (section_width // 2 - text.get_width() // 2, section_height // 2 - text.get_height() // 2))
         elif i == 2:
-            screen.blit(text, (3*section_width//2 - text.get_width()//2, section_height//2 - text.get_height()//2))
+            screen.blit(text, (3 * section_width // 2 - text.get_width() // 2, section_height // 2 - text.get_height() // 2))
         elif i == 3:
-            screen.blit(text, (5*section_width//2 - text.get_width()//2, section_height//2 - text.get_height()//2))
+            screen.blit(text, (5 * section_width // 2 - text.get_width() // 2, section_height // 2 - text.get_height() // 2))
         elif i == 4:
-            screen.blit(text, (section_width//2 - text.get_width()//2, 3*section_height//2 - text.get_height()//2))
+            screen.blit(text, (section_width // 2 - text.get_width() // 2, 3 * section_height // 2 - text.get_height() // 2))
         elif i == 5:
-            screen.blit(text, (3*section_width//2 - text.get_width()//2, 3*section_height//2 - text.get_height()//2))
+            screen.blit(text, (3 * section_width // 2 - text.get_width() // 2, 3 * section_height // 2 - text.get_height() // 2))
         elif i == 6:
-            screen.blit(text, (5*section_width//2 - text.get_width()//2, 3*section_height//2 - text.get_height()//2))
+            screen.blit(text, (5 * section_width // 2 - text.get_width() // 2, 3 * section_height // 2 - text.get_height() // 2))
 
     pygame.display.flip()
     time.sleep(0.1)

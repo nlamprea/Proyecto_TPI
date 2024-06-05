@@ -7,6 +7,9 @@ import cv2
 import easyocr
 import matplotlib.pyplot as plt
 
+# texto a audio
+from gtts import gTTS
+import os
 
 # Esperar 3 segundos
 time.sleep(3)
@@ -31,6 +34,7 @@ ruta_archivo = f"/Users/{user}/Documents/PROYECTO_TPI/src/screenshot{num}.jpg"
 # else:
 screenshot.save(ruta_archivo)
 
+res_list = []
 
 reader = easyocr.Reader(["es"], gpu=False)
 image = cv2.imread(ruta_archivo)
@@ -43,13 +47,39 @@ for res in result:
      pt1 = res[0][1]
      pt2 = res[0][2]
      pt3 = res[0][3]
-     cv2.rectangle(image, pt0, (pt1[0], pt1[1] - 23), (166, 56, 242), -1)
-     cv2.putText(image, res[1], (pt0[0], pt0[1] -3), 2, 0.8, (255, 255, 255), 1)
-     cv2.rectangle(image, pt0, pt2, (166, 56, 242), 2)
-     cv2.circle(image, pt0, 2, (255, 0, 0), 2)
-     cv2.circle(image, pt1, 2, (0, 255, 0), 2)
-     cv2.circle(image, pt2, 2, (0, 0, 255), 2)
-     cv2.circle(image, pt3, 2, (0, 255, 255), 2)
-     cv2.imshow("Image", image)
-     cv2.waitKey(0)
-cv2.destroyAllWindows()
+
+     res_list.append(res[1])
+
+     # cv2.rectangle(image, pt0, (pt1[0], pt1[1] - 23), (166, 56, 242), -1)
+     # cv2.putText(image, res[1], (pt0[0], pt0[1] -3), 2, 0.8, (255, 255, 255), 1)
+     # cv2.rectangle(image, pt0, pt2, (166, 56, 242), 2)
+     # cv2.circle(image, pt0, 2, (255, 0, 0), 2)
+     # cv2.circle(image, pt1, 2, (0, 255, 0), 2)
+     # cv2.circle(image, pt2, 2, (0, 0, 255), 2)
+     # cv2.circle(image, pt3, 2, (0, 255, 255), 2)
+     # cv2.imshow("Image", image)
+     # cv2.waitKey(0)
+# cv2.destroyAllWindows()
+
+
+# print("Contenido de res_list:")
+# for item in res_list:
+#     print(item)
+
+words_string = " ".join(res_list)
+# Imprimir la cadena de texto resultante
+print("Contenido de words_string:")
+print(words_string)
+
+
+language = 'es'
+
+# Crea el objeto gTTS
+speech = gTTS(text=words_string, lang=language, slow=False)
+
+# Guarda el archivo de audio
+output_file = "output.mp3"
+speech.save(output_file)
+
+# Reproduce el archivo de audio (opcional)
+os.system(f"start {output_file}")
