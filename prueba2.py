@@ -67,8 +67,8 @@ def take_screenshot(x, y, section_width, section_height):
     width = section_width
     height = section_height
     screenshot = pyautogui.screenshot(region=(left, top, width, height))
-    #screenshot.save(f'screenshot_{int(time.time())}.png')
-    screenshot.save(f'screenshot/screenshot_2.png')
+    screenshot.save(f'screenshot_{int(time.time())}.png')
+    #screenshot.save(f'screenshot/screenshot_2.png')
 
 running = True
 last_section = 0
