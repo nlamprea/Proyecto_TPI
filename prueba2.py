@@ -19,17 +19,20 @@ BLACK = (0, 0, 0)
 # Inicializar el mezclador de sonido de Pygame
 pygame.mixer.init()
 
-# Cargar sonidos (puedes cambiar los archivos de sonido según tus preferencias)
-sound1 = pygame.mixer.Sound('sounds/Alarm01.wav')
-sound2 = pygame.mixer.Sound('sounds/Alarm02.wav')
-sound3 = pygame.mixer.Sound('sounds/Alarm03.wav')
-sound4 = pygame.mixer.Sound('sounds/Alarm04.wav')
-sound5 = pygame.mixer.Sound('sounds/Alarm05.wav')
-sound6 = pygame.mixer.Sound('sounds/Alarm06.wav')
+# Cargar sonidos
+sound1 = pygame.mixer.Sound('sounds/sounds/sonido_1.wav')
+sound2 = pygame.mixer.Sound('sounds/sounds/sonido_2.wav')
+sound3 = pygame.mixer.Sound('sounds/sounds/sonido_3.wav')
+sound4 = pygame.mixer.Sound('sounds/sounds/sonido_4.wav')
+sound5 = pygame.mixer.Sound('sounds/sounds/sonido_5.wav')
+sound6 = pygame.mixer.Sound('sounds/sounds/sonido_6.wav')
 
 # Definir las secciones de la pantalla
 section_width = screen_width // 3
 section_height = screen_height // 2
+
+# Variable para guardar el sonido activo
+current_sound = None
 
 def get_section(x, y):
     if y < section_height:
@@ -48,18 +51,28 @@ def get_section(x, y):
             return 6
 
 def play_sound(section):
+    global current_sound
+
+    # Detener el sonido actual si existe
+    if current_sound:
+        current_sound.stop()
+
+    # Asignar y reproducir el nuevo sonido en bucle
     if section == 1:
-        sound1.play()
+        current_sound = sound1
     elif section == 2:
-        sound2.play()
+        current_sound = sound2
     elif section == 3:
-        sound3.play()
+        current_sound = sound3
     elif section == 4:
-        sound4.play()
+        current_sound = sound4
     elif section == 5:
-        sound5.play()
+        current_sound = sound5
     elif section == 6:
-        sound6.play()
+        current_sound = sound6
+
+    # Reproducir el sonido en bucle (loops=-1 para bucle indefinido)
+    current_sound.play(loops=-1)
 
 def take_screenshot(x, y, section_width, section_height):
     left = (x // section_width) * section_width
@@ -68,7 +81,6 @@ def take_screenshot(x, y, section_width, section_height):
     height = section_height
     screenshot = pyautogui.screenshot(region=(left, top, width, height))
     screenshot.save(f'screenshot_{int(time.time())}.png')
-    #screenshot.save(f'screenshot/screenshot_2.png')
 
 running = True
 last_section = 0
@@ -83,6 +95,11 @@ while running:
         x, y = pyautogui.position()
         take_screenshot(x, y, section_width, section_height)
         print("Captura de pantalla tomada.")
+
+    # Detectar la combinación de teclas Ctrl+E para salir del programa
+    if keyboard.is_pressed('ctrl+e'):
+        print("Programa finalizado por el usuario.")
+        running = False
 
     # Obtener la posición actual del mouse
     x, y = pyautogui.position()

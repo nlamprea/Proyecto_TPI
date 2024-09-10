@@ -23,12 +23,12 @@ pygame.mixer.init()
 
 
 # Cargar sonidos (puedes cambiar los archivos de sonido según tus preferencias)
-sound1 = pygame.mixer.Sound('sounds\Alarm01.wav')
-sound2 = pygame.mixer.Sound('sounds\Alarm02.wav')
-sound3 = pygame.mixer.Sound('sounds\Alarm03.wav')
-sound4 = pygame.mixer.Sound('sounds\Alarm04.wav')
-sound5 = pygame.mixer.Sound('sounds\Alarm05.wav')
-sound6 = pygame.mixer.Sound('sounds\Alarm06.wav')
+sound1 = pygame.mixer.Sound('sounds\sounds\sonido_1.wav')
+sound2 = pygame.mixer.Sound('sounds\sounds\sonido_2.wav')
+sound3 = pygame.mixer.Sound('sounds\sounds\sonido_3.wav')
+sound4 = pygame.mixer.Sound('sounds\sounds\sonido_4.wav')
+sound5 = pygame.mixer.Sound('sounds\sounds\sonido_5.wav')
+sound6 = pygame.mixer.Sound('sounds\sounds\sonido_6.wav')
 
 # Definir las secciones de la pantalla
 section_height = screen_height // 3

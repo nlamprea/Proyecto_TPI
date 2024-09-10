@@ -2,7 +2,6 @@ import pyautogui
 import time
 import random
 import getpass
-
 import cv2
 import easyocr
 import matplotlib.pyplot as plt

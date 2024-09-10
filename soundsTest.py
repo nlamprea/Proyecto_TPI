@@ -1,15 +1,32 @@
 import pygame
-import numpy as np
 
-
+# Inicializar pygame y el mezclador de sonido
 pygame.init()
-sound = pygame.mixer.Sound('sounds\Alarm01.wav')
-# Obtén la frecuencia original del sonido
-original_frequency = sound.get_frequency('sounds\Alarm01.wav')
+pygame.mixer.init()
 
-# Establece la nueva frecuencia (por ejemplo, para aumentar el pitch en 2 semitonos)
-new_frequency = original_frequency * 2**(2/12)
+# Dimensiones de la ventana (opcional)
+screen_width, screen_height = 800, 600
+screen = pygame.display.set_mode((screen_width, screen_height))
+pygame.display.set_caption("Sonido solo en el audífono derecho")
 
-# Crea una nueva versión del sonido con la nueva frecuencia
-new_sound = pygame.mixer.Sound(np.resize(sound.get_raw(), (int(sound.get_length() * new_frequency), 1)))
-new_sound.set_volume(sound.get_volume())
+# Cargar el sonido
+sound1 = pygame.mixer.Sound('sounds/sounds/sonido_1.wav')
+
+# Usamos un canal de audio para poder ajustar el balance estéreo
+channel = pygame.mixer.Channel(0)
+
+# Configurar el sonido para que solo salga por el audífono derecho
+channel.set_volume(0, 1)  # Volumen en el izquierdo = 0, Volumen en el derecho = 1
+
+# Reproducir el sonido en el canal
+channel.play(sound1)
+
+# Mantener la ventana abierta por un tiempo para escuchar el sonido
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+# Cerrar pygame
+pygame.quit()
