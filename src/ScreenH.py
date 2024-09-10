@@ -20,12 +20,12 @@ BLACK = (0, 0, 0)
 pygame.mixer.init()
 
 # Cargar sonidos
-sound1 = pygame.mixer.Sound('sounds/sounds/sonido_1.wav')
-sound2 = pygame.mixer.Sound('sounds/sounds/sonido_2.wav')
-sound3 = pygame.mixer.Sound('sounds/sounds/sonido_3.wav')
-sound4 = pygame.mixer.Sound('sounds/sounds/sonido_4.wav')
-sound5 = pygame.mixer.Sound('sounds/sounds/sonido_5.wav')
-sound6 = pygame.mixer.Sound('sounds/sounds/sonido_6.wav')
+sound1 = pygame.mixer.Sound('sounds/sonido_1.wav')
+sound2 = pygame.mixer.Sound('sounds/sonido_2.wav')
+sound3 = pygame.mixer.Sound('sounds/sonido_3.wav')
+sound4 = pygame.mixer.Sound('sounds/sonido_4.wav')
+sound5 = pygame.mixer.Sound('sounds/sonido_5.wav')
+sound6 = pygame.mixer.Sound('sounds/sonido_6.wav')
 
 # Definir las secciones de la pantalla
 section_width = screen_width // 3
@@ -91,7 +91,7 @@ while running:
             running = False
 
     # Detectar combinación de teclas Ctrl+Shift+S para tomar captura de pantalla
-    if keyboard.is_pressed('ctrl+shift+s'):
+    if keyboard.is_pressed('ctrl+shift+f'):
         x, y = pyautogui.position()
         take_screenshot(x, y, section_width, section_height)
         print("Captura de pantalla tomada.")
