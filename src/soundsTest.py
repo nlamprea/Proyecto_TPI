@@ -10,7 +10,7 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Sonido solo en el audífono derecho")
 
 # Cargar el sonido
-sound1 = pygame.mixer.Sound('sounds/sounds/sonido_1.wav')
+sound1 = pygame.mixer.Sound('sounds/sonido_1.wav')
 
 # Usamos un canal de audio para poder ajustar el balance estéreo
 channel = pygame.mixer.Channel(0)

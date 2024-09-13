@@ -21,7 +21,7 @@ screenshot = pyautogui.screenshot()
 user = getpass.getuser()
 num= random.randint(10,100)
 
-ruta_archivo = f"D:\TPI_Proyecto/Proyecto_TPI/src/img/screenshot{num}.jpg"
+ruta_archivo = f"D:\TPI_Proyecto/Proyecto_TPI/img/screenshot{num}.jpg"
 #ruta_archivo = f"/Users/{user}/Documents/PROYECTO_TPI/src/screenshot{num}.jpg"
 
 
