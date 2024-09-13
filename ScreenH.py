@@ -9,7 +9,9 @@ import matplotlib.pyplot as plt
 from gtts import gTTS
 import os
 
-ruta_base = os.path.dirname(os.path.abspath(__file__))
+ruta_base =         os.path.dirname(os.path.abspath(__file__))
+screenshots_dir =   os.path.join(ruta_base, 'screenshot')
+output_dir =         os.path.join(ruta_base, 'output')
 
 numS = 1
 # Inicializar Pygame
@@ -110,59 +112,74 @@ def play_sound(section):
     # Reproducir el sonido en bucle (loops=-1 para bucle indefinido)
     current_sound.play(loops=-1)
 
-def take_screenshot(x, y, section_width, section_height):
-    
-    screenshots_dir = os.path.join(ruta_base, 'screenshot')
-    
+def num_Global():
+    global numS
     # Directorio de capturas de pantalla existe
     os.makedirs(screenshots_dir, exist_ok=True)
     
     #numS = 1
     while os.path.exists(os.path.join(screenshots_dir, f'screenshot_{numS}.png')):
-        numS += 1    
+        numS += 1  
+        
+    return numS
 
+def take_screenshot(x, y, section_width, section_height):
+       
+    numS = num_Global()
     left = (x // section_width) * section_width
     top = (y // section_height) * section_height
     width = section_width
     height = section_height
     screenshot = pyautogui.screenshot(region=(left, top, width, height))
-    screenshot.save(ruta_base+f'/screenshot/screenshot_{numS}.png')
+    screenshot.save(screenshots_dir+f'/screenshot_{numS}.png')
     
     
-def audioScreenshot(num):
-    ruta_archivo =f"screenshot_{num}.png"
+def audioScreenshot():
+    
+    num = num_Global() - 1
+    print(num)
+    # directorios existen
+    os.makedirs(screenshots_dir, exist_ok=True)
+    os.makedirs(output_dir, exist_ok=True)
+    
+    archivo_screenshot = os.path.join(screenshots_dir, f'screenshot_{num}.png')
 
-    res_list = []
+    if os.path.exists(archivo_screenshot):
+        res_list = []
 
-    reader = easyocr.Reader(["es"], gpu=False)
-    image = cv2.imread(ruta_archivo)
+        reader = easyocr.Reader(["es"], gpu=False)
+        image = cv2.imread(archivo_screenshot)
 
-    result = reader.readtext(image, paragraph=False)
+        result = reader.readtext(image, paragraph=False)
 
-    for res in result:
-        print("res:", res)
-        pt0 = res[0][0]
-        pt1 = res[0][1]
-        pt2 = res[0][2]
-        pt3 = res[0][3]
-        res_list.append(res[1])
+        for res in result:
+            print("res:", res)
+            pt0 = res[0][0]
+            pt1 = res[0][1]
+            pt2 = res[0][2]
+            pt3 = res[0][3]
+            res_list.append(res[1])
 
-    words_string = " ".join(res_list)
-    #Imprimir la cadena de texto resultante
-    print("Contenido de words_string:")
-    print(words_string)
+        words_string = " ".join(res_list)
+        #Imprimir la cadena de texto resultante
+        print("Contenido de words_string:")
+        print(words_string)
 
-    language = 'es'
+        language = 'es'
 
-    #Crea el objeto gTTS
-    speech = gTTS(text=words_string, lang=language, slow=False)
+        #Crea el objeto gTTS
+        speech = gTTS(text=words_string, lang=language, slow=False)
 
-    #Guarda el archivo de audio
-    output_file = "output.mp3"
-    speech.save(output_file)
+        #Guarda el archivo de audio
+        output_file = output_dir + "output.mp3"
+        
+        if os.path.exists(output_file):
+            os.remove(output_file)
+        
+        speech.save(output_file)
 
-    #Reproduce el archivo de audio (opcional)
-    os.system(f"start {output_file}")
+        #Reproduce el archivo de audio (opcional)
+        os.system(f"start {output_file}")
     
 
 
@@ -182,7 +199,7 @@ while running:
         print("Captura de pantalla tomada.")
         
     if keyboard.is_pressed('ctrl+j'):
-        audioScreenshot(17)
+        audioScreenshot()
         print("Ouput.")
 
     # Detectar la combinación de teclas Ctrl+E para salir del programa
