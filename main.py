@@ -3,12 +3,15 @@ from tkinter import PhotoImage
 
 import os
 
+import mainScreenH
+
 # Función para ejecutar un archivo .py
 def ejecutar_archivo(nombre_archivo):
     os.system(f'python {nombre_archivo}')
 
 # Función para cerrar la aplicación
 def cerrar_aplicacion():
+    mainScreenH.main(False)
     ventana.destroy()
 
 # Configurar la ventana
@@ -55,7 +58,7 @@ estilo_boton = {
 }
 
 # Botones
-boton1 = tk.Button(ventana, text="Iniciar Archivo 1", command=lambda: ejecutar_archivo('ScreenH.py'), **estilo_boton)
+boton1 = tk.Button(ventana, text="Iniciar Archivo 1", command=lambda: mainScreenH.main(True), **estilo_boton)
 boton1.pack(pady=10)
 
 boton2 = tk.Button(ventana, text="Iniciar Archivo 2", command=lambda: ejecutar_archivo('archivo2.py'), **estilo_boton)
