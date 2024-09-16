@@ -21,12 +21,12 @@ def guardar_sonido_wav(sonido, archivo, sample_rate=44100):
         wav_file.setframerate(sample_rate)
         wav_file.writeframes((sonido * 32767).astype(np.int16).tobytes())  # Convertir a 16-bit PCM
 
-# Generar y guardar 6 sonidos con diferentes frecuencias
-frecuencias = [440, 550, 660, 770, 880, 990]  # Frecuencias de los tonos
-volumen = 0.5  # Volumen común para los 6 sonidos
-duracion = 11.0  # Duración en segundos
+# Generar y guardar 9 sonidos con diferentes frecuencias
+frecuencias = [440, 550, 660, 770, 880, 990, 1100, 1210, 1320]  # Añadidas tres nuevas frecuencias
+volumen = 0.5  # Volumen común para los 9 sonidos
+duracion = 7.0  # Duración en segundos
 
-for i in range(6):
+for i in range(9):
     sonido = generar_sonido(frecuencia=frecuencias[i], duracion=duracion, volumen=volumen)
     archivo_salida = f"sounds/sonido_{i+1}.wav"  # Ruta de guardado en la carpeta sounds
     guardar_sonido_wav(sonido, archivo_salida)

@@ -8,6 +8,7 @@ pip install easyocr
 pip install matplotlib
 pip install gTTS
 pip install auto-py-to-exe
+pip install sounddevice
 
 De .py a .exe
 
