@@ -9,6 +9,7 @@ pip install matplotlib
 pip install gTTS
 pip install auto-py-to-exe
 pip install sounddevice
+pip install pyttsx3
 
 De .py a .exe
 

@@ -9,12 +9,12 @@ engine = pyttsx3.init()
 
 # Definir dimensiones de la cuadrícula
 ROWS, COLS = 9, 9
-CELL_SIZE = 90
+CELL_SIZE = 60
 WIDTH, HEIGHT = COLS * CELL_SIZE, ROWS * CELL_SIZE
 
 # Inicializar la ventana
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Busca Minas")
+pygame.display.set_caption("Busca Minas Sonoro")
 
 # Definir colores
 WHITE = (255, 255, 255)
@@ -25,8 +25,8 @@ RED = (255, 0, 0)
 
 # Cargar sonidos
 pygame.mixer.init()
+sound0 = pygame.mixer.Sound('sounds/soundsB/sonido_0.wav')  # Sonido inicial espacial
 sounds = [pygame.mixer.Sound(f'sounds/soundsB/sonido_{i+1}.wav') for i in range(9)]  # Sonidos de 1 a 9
-explosion_sound = pygame.mixer.Sound('sounds/soundsB/explosion.wav')
 
 # Inicializar canales de sonido
 channel = pygame.mixer.Channel(0)
@@ -96,12 +96,19 @@ def play_sound_based_on_mouse(mouse_x, mouse_y, sound):
     if not channel.get_busy():
         channel.play(sound)
 
-# Decir cuántas minas hay alrededor de la celda
-def speak_mines_around(row, col):
-    if mines[row][col] != -1:
-        num_mines = mines[row][col]
-        engine.say(f"Hay {num_mines} minas alrededor")
-        engine.runAndWait()
+# Detener el sonido `sound0` y comenzar con los sonidos de la matriz
+def stop_initial_sound():
+    sound0.stop()
+
+# Reproducir sonido espacial basado en la casilla presionada y los sonidos alrededor
+def play_spatial_sounds(row, col):
+    # Matriz de sonidos alrededor
+    directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 0), (0, 1), (1, -1), (1, 0), (1, 1)]
+    for i, (dr, dc) in enumerate(directions):
+        nr, nc = row + dr, col + dc
+        if 0 <= nr < ROWS and 0 <= nc < COLS:
+            sound = sounds[i]  # Asignar sonido correspondiente de la matriz
+            play_sound_based_on_mouse(nc * CELL_SIZE, nr * CELL_SIZE, sound)
 
 # Función para obtener la celda debajo del cursor
 def get_cell_under_mouse():
@@ -110,26 +117,10 @@ def get_cell_under_mouse():
     col = x // CELL_SIZE
     return row, col
 
-# Terminar el juego cuando explote una mina
-def game_over():
-    explosion_sound.play()
-    engine.say("Has explotado una mina. Fin del juego.")
-    engine.runAndWait()
-    explosion_sound.stop()
-    pygame.quit()
-    exit()
-
-# Función para verificar si el mouse está dentro de la ventana
-def is_mouse_inside_window(mouse_x, mouse_y):
-    if (1 <= mouse_x < WIDTH - 1 and 1 <= mouse_y < HEIGHT - 1):
-        return True
-    else:
-        return False
-
 # Main loop
 running = True
 last_cell = (-1, -1)  # Para evitar repetir el sonido al quedarse en la misma celda
-mouse_inside_window = True  # Variable para verificar si el mouse estaba dentro de la ventana
+initial_sound_playing = True  # Para controlar el sonido inicial
 while running:
     screen.fill(WHITE)
     draw_grid()
@@ -141,29 +132,17 @@ while running:
             row, col = get_cell_under_mouse()
             if not revealed[row][col]:
                 revealed[row][col] = True
-                if mines[row][col] == -1:
-                    game_over()
-                else:
-                    speak_mines_around(row, col)
+                if initial_sound_playing:
+                    stop_initial_sound()  # Detener sonido inicial
+                    initial_sound_playing = False
+                play_spatial_sounds(row, col)
 
-    # Obtener la posición del mouse
-    mouse_x, mouse_y = pygame.mouse.get_pos()
-
-    # Verificar si el mouse está dentro de la ventana
-    if is_mouse_inside_window(mouse_x, mouse_y):
-        if not mouse_inside_window:  # Si el mouse acaba de volver a la ventana
-            mouse_inside_window = True  # Actualizamos el estado del mouse
-        # Obtener la celda actual bajo el cursor
-        row, col = get_cell_under_mouse()
-        
-        # Solo reproducir sonido si el mouse está en una nueva celda
-        if (row, col) != last_cell and 0 <= row < ROWS and 0 <= col < COLS:
-            play_sound_based_on_mouse(mouse_x, mouse_y, sounds[mines[row][col]])
-            last_cell = (row, col)  # Actualizar la última celda visitada
-    else:
-        if mouse_inside_window:  # Si el mouse acaba de salir de la ventana
-            channel.stop()  # Detenemos el sonido
-            mouse_inside_window = False  # Actualizamos el estado del mouse
+    # Obtener la celda actual bajo el cursor
+    row, col = get_cell_under_mouse()
+    
+    # Solo reproducir sonido si el mouse está en una nueva celda
+    if (row, col) != last_cell and 0 <= row < ROWS and 0 <= col < COLS:
+        last_cell = (row, col)  # Actualizar la última celda visitada
 
     pygame.display.flip()
 
