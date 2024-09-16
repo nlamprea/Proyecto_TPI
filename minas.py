@@ -23,7 +23,7 @@ RED = (255, 0, 0)
 
 # Cargar sonidos (ahora tenemos 9 sonidos diferentes)
 pygame.mixer.init()
-sounds = [pygame.mixer.Sound(f'sounds/sonido_{i+1}.wav') for i in range(9)]  # Asegúrate de tener 9 sonidos generados
+sounds = [pygame.mixer.Sound(f'sounds/soundsB/sonido_{i+1}.wav') for i in range(9)]  # Asegúrate de tener 9 sonidos generados
 
 # Crear una matriz de minas y números
 mines = [[0 for _ in range(COLS)] for _ in range(ROWS)]
