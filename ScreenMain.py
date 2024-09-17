@@ -1,5 +1,6 @@
 import os
-from program_execution import run_program
+from programExecutionScreen import run_program
+from mainMinas import mainmines
 
 # Función para que el usuario elija la división
 def choose_division():
@@ -21,7 +22,7 @@ def choose_division():
 
     return divisions_options.get(choice, (3, 2))  # Por defecto 3x2
 
-if __name__ == "__main__":
+def mainScreen():
     ruta_base = os.path.dirname(os.path.abspath(__file__))
     screenshots_dir = os.path.join(ruta_base, 'screenshot')
     output_dir = os.path.join(ruta_base, 'output')
@@ -31,3 +32,7 @@ if __name__ == "__main__":
 
     # Ejecutar el programa principal
     run_program(columns, rows, ruta_base, screenshots_dir, output_dir)
+
+
+def mainMina():
+    mainmines()

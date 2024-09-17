@@ -3,7 +3,8 @@ from tkinter import PhotoImage
 
 import os
 
-import mainScreenH
+import screenMain
+import mainMinas
 
 # Función para ejecutar un archivo .py
 def ejecutar_archivo(nombre_archivo):
@@ -11,7 +12,6 @@ def ejecutar_archivo(nombre_archivo):
 
 # Función para cerrar la aplicación
 def cerrar_aplicacion():
-    mainScreenH.main(False)
     ventana.destroy()
 
 # Configurar la ventana
@@ -58,10 +58,10 @@ estilo_boton = {
 }
 
 # Botones
-boton1 = tk.Button(ventana, text="Iniciar Archivo 1", command=lambda: mainScreenH.main(True), **estilo_boton)
+boton1 = tk.Button(ventana, text="Pantalla dividida", command=lambda: screenMain.mainScreen(), **estilo_boton)
 boton1.pack(pady=10)
 
-boton2 = tk.Button(ventana, text="Iniciar Archivo 2", command=lambda: ejecutar_archivo('archivo2.py'), **estilo_boton)
+boton2 = tk.Button(ventana, text="Busca minas", command=lambda: screenMain.mainMina(), **estilo_boton)
 boton2.pack(pady=10)
 
 # Botón para salir

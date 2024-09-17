@@ -4,33 +4,39 @@ import pyautogui
 import pyttsx3
 import sys
 import os
-
-ruta_base =         os.path.dirname(os.path.abspath(__file__))
-# Inicializar pygame
-pygame.init()
-engine = pyttsx3.init()
-pygame.mixer.set_num_channels(9)
-
-# Configuración de la ventana y la grilla
-# WIDTH, HEIGHT = 450, 450  # Tamaño de la ventana
-# ROWS, COLS = 9, 9         # Tamaño de la grilla 9x9
-# CELL_SIZE = WIDTH // COLS  # Tamaño de cada celda
-ROWS, COLS = 9, 9
-CELL_SIZE = 90
-WIDTH, HEIGHT = COLS * CELL_SIZE, ROWS * CELL_SIZE
+import time
 
 
-# Colores
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-GRAY = (192, 192, 192)
-DARK_GRAY = (160, 160, 160)
-RED = (255, 0, 0)
 
-# Cargar sonidos
-pygame.mixer.init()
-#sounds = [pygame.mixer.Sound(f"sounds/sonido_{i+1}.wav") for i in range(9)]
-sounds = [
+def int_minas():
+    global ruta_base, engine, ROWS, COLS, CELL_SIZE, WIDTH, HEIGHT
+    global WHITE, BLACK, GRAY, DARK_GRAY, RED
+    global sounds, channels, explosion_sound, channel1
+    global screen, sound1
+    global revealed, sound_grid, first_click, current_sound_playing, current_center, current_sound
+    global mines, NUM_MINES, mines_pos
+
+    ruta_base = os.path.dirname(os.path.abspath(__file__))
+
+    # Inicializar pygame
+    pygame.init()
+    engine = pyttsx3.init()
+    pygame.mixer.set_num_channels(9)
+
+    ROWS, COLS = 9, 9
+    CELL_SIZE = 90
+    WIDTH, HEIGHT = COLS * CELL_SIZE, ROWS * CELL_SIZE
+
+    # Colores
+    WHITE = (255, 255, 255)
+    BLACK = (0, 0, 0)
+    GRAY = (192, 192, 192)
+    DARK_GRAY = (160, 160, 160)
+    RED = (255, 0, 0)
+
+    # Cargar sonidos
+    pygame.mixer.init()
+    sounds = [
         pygame.mixer.Sound(ruta_base + '/sounds/sonido_1.wav'),
         pygame.mixer.Sound(ruta_base + '/sounds/sonido_2.wav'),
         pygame.mixer.Sound(ruta_base + '/sounds/sonido_3.wav'),
@@ -41,33 +47,37 @@ sounds = [
         pygame.mixer.Sound(ruta_base + '/sounds/sonido_8.wav'),
         pygame.mixer.Sound(ruta_base + '/sounds/sonido_9.wav')
     ]
-channels = [pygame.mixer.Channel(i) for i in range(9)]  # Asignar un canal para cada sonido
-explosion_sound = pygame.mixer.Sound(ruta_base + '/sounds/explosion.wav')
-channel1 = pygame.mixer.Channel(0)
-# Configurar la pantalla
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Grilla de Sonidos Espaciales")
+    channels = [pygame.mixer.Channel(i) for i in range(9)]  # Asignar un canal para cada sonido
+    explosion_sound = pygame.mixer.Sound(ruta_base + '/sounds/explosion.wav')
+    channel1 = pygame.mixer.Channel(0)
 
-sound1 = pygame.mixer.Sound(ruta_base+'/sounds/sonido_1.wav')
+    # Configurar la pantalla
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    pygame.display.set_caption("Grilla de Sonidos Espaciales")
 
-# Estados iniciales
-revealed = [[False for _ in range(COLS)] for _ in range(ROWS)]
-sound_grid = [[None for _ in range(COLS)] for _ in range(ROWS)]  # Grilla que contiene los índices de sonido
-first_click = False  # Para determinar si ya se hizo el primer clic
-current_sound_playing = None  # Para rastrear el sonido actual
-current_center = None  # Mantener la celda central actual
-# Variable para guardar el sonido activo
-current_sound = None
+    sound1 = pygame.mixer.Sound(ruta_base + '/sounds/sonido_1.wav')
 
-# Crear una matriz de minas y números
-mines = [[0 for _ in range(COLS)] for _ in range(ROWS)]
-revealed = [[False for _ in range(COLS)] for _ in range(ROWS)]
+    # Estados iniciales
+    revealed = [[False for _ in range(COLS)] for _ in range(ROWS)]
+    sound_grid = [[None for _ in range(COLS)] for _ in range(ROWS)]  # Grilla que contiene los índices de sonido
+    first_click = False  # Para determinar si ya se hizo el primer clic
+    current_sound_playing = None  # Para rastrear el sonido actual
+    current_center = None  # Mantener la celda central actual
+    current_sound = None  # Variable para guardar el sonido activo
 
-# Colocar minas aleatoriamente
-NUM_MINES = 10
-mines_pos = random.sample([(r, c) for r in range(ROWS) for c in range(COLS)], NUM_MINES)
-for r, c in mines_pos:
-    mines[r][c] = -1  # -1 representa una mina
+    # Crear una matriz de minas y números
+    mines = [[0 for _ in range(COLS)] for _ in range(ROWS)]
+    revealed = [[False for _ in range(COLS)] for _ in range(ROWS)]
+
+    # Colocar minas aleatoriamente
+    NUM_MINES = 10
+    mines_pos = random.sample([(r, c) for r in range(ROWS) for c in range(COLS)], NUM_MINES)
+    for r, c in mines_pos:
+        mines[r][c] = -1  # -1 representa una mina
+
+
+
+
 
 
 # Calcular los números que indican cuántas minas hay alrededor de cada celda
@@ -98,7 +108,7 @@ def game_over():
     engine.runAndWait()
     explosion_sound.stop()
     pygame.quit()
-    exit()
+
 
 def is_mouse_inside_window(mouse_x, mouse_y):
     if (1 <= mouse_x < WIDTH - 1 and 1 <= mouse_y < HEIGHT - 1):
@@ -247,46 +257,48 @@ def play_sound_based_on_mouse1(mouse_x, mouse_y, sound):
     if not channel1.get_busy():
         channel1.play(sound)
 
-calculate_mines_around()
-# Bucle principal del juego
-running = True
-mouse_inside_window = True
-while running:
-    screen.fill(GRAY)
-    draw_grid()
+
+
+def mainmines():
+
+    
+    int_minas()
+    calculate_mines_around()
+    # Bucle principal del juego
+    running = True
+    mouse_inside_window = True
+    while running:
+        screen.fill(GRAY)
+        draw_grid()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                row, col = get_cell_under_mouse()
+                if not revealed[row][col]:
+                    revealed[row][col] = True
+                    if mines[row][col] == -1:
+                        game_over()
+                    else:
+                        speak_mines_around(row, col)
+                handle_click(pygame.mouse.get_pos())
+        # Verificar la posición del mouse constantemente
+        handle_mouse_movement(pygame.mouse.get_pos())
+        
+        # Obtener la posición del mouse
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+        # Verificar si el mouse está dentro de la ventana
+        if is_mouse_inside_window(mouse_x, mouse_y) and first_click == False:
+            if not mouse_inside_window:  # Si el mouse acaba de volver a la ventana
+                mouse_inside_window = True  # Actualizamos el estado del mouse
+            play_sound_based_on_mouse1(mouse_x, mouse_y, sound1)
+        
+        else:
+            if mouse_inside_window:  # Si el mouse acaba de salir de la ventana
+                channel1.stop()  # Detenemos el sonido
+                mouse_inside_window = False
+        pygame.display.flip()
+        time.sleep(0.1)
+    pygame.quit()
     
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            row, col = get_cell_under_mouse()
-            if not revealed[row][col]:
-                revealed[row][col] = True
-                if mines[row][col] == -1:
-                    game_over()
-                else:
-                    speak_mines_around(row, col)
-            handle_click(pygame.mouse.get_pos())
-    # Verificar la posición del mouse constantemente
-    handle_mouse_movement(pygame.mouse.get_pos())
-    
-    # Obtener la posición del mouse
-    mouse_x, mouse_y = pygame.mouse.get_pos()
-
-    # Verificar si el mouse está dentro de la ventana
-    if is_mouse_inside_window(mouse_x, mouse_y) and first_click == False:
-        if not mouse_inside_window:  # Si el mouse acaba de volver a la ventana
-            mouse_inside_window = True  # Actualizamos el estado del mouse
-        play_sound_based_on_mouse1(mouse_x, mouse_y, sound1)
-    
-    else:
-        if mouse_inside_window:  # Si el mouse acaba de salir de la ventana
-            channel1.stop()  # Detenemos el sonido
-            mouse_inside_window = False
-
-
-    pygame.display.flip()
-
-pygame.quit()
-sys.exit()
