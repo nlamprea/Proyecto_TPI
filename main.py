@@ -4,7 +4,7 @@ from tkinter import PhotoImage
 import os
 
 import screenMain
-import mainMinas
+import a
 
 # Función para ejecutar un archivo .py
 def ejecutar_archivo(nombre_archivo):
@@ -36,7 +36,7 @@ try:
     logo = PhotoImage(file="img/logo.png")
     # Escalar el logo a un tamaño más pequeño
     logo = logo.subsample(3, 3)  # Ajusta estos valores según sea necesario
-    logo_label = tk.Label(ventana, image=logo, bg="#2c2c2c")
+    logo_label = tk.Label(ventana, image=logo, bg="#ffffff")
     logo_label.pack(pady=10)
 except:
     logo_label = tk.Label(ventana, text="Logo", bg="#2c2c2c", fg="white", font=("Arial", 20))
@@ -58,7 +58,7 @@ estilo_boton = {
 }
 
 # Botones
-boton1 = tk.Button(ventana, text="Pantalla dividida", command=lambda: screenMain.mainScreen(), **estilo_boton)
+boton1 = tk.Button(ventana, text="Pantalla dividida", command=lambda: a.main(), **estilo_boton)
 boton1.pack(pady=10)
 
 boton2 = tk.Button(ventana, text="Busca minas", command=lambda: screenMain.mainMina(), **estilo_boton)

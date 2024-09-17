@@ -13,7 +13,7 @@ def int_minas():
     global WHITE, BLACK, GRAY, DARK_GRAY, RED
     global sounds, channels, explosion_sound, channel1
     global screen, sound1
-    global revealed, sound_grid, first_click, current_sound_playing, current_center, current_sound
+    global revealed, flagged, sound_grid, first_click, current_sound_playing, current_center, current_sound
     global mines, NUM_MINES, mines_pos
 
     ruta_base = os.path.dirname(os.path.abspath(__file__))
@@ -59,6 +59,7 @@ def int_minas():
 
     # Estados iniciales
     revealed = [[False for _ in range(COLS)] for _ in range(ROWS)]
+    flagged = [[False for _ in range(COLS)] for _ in range(ROWS)]  # Lista para celdas bloqueadas
     sound_grid = [[None for _ in range(COLS)] for _ in range(ROWS)]  # Grilla que contiene los índices de sonido
     first_click = False  # Para determinar si ya se hizo el primer clic
     current_sound_playing = None  # Para rastrear el sonido actual

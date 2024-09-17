@@ -22,14 +22,14 @@ def choose_division():
 
     return divisions_options.get(choice, (3, 2))  # Por defecto 3x2
 
-def mainScreen():
+def mainScreen(c,r):
     ruta_base = os.path.dirname(os.path.abspath(__file__))
     screenshots_dir = os.path.join(ruta_base, 'screenshot')
     output_dir = os.path.join(ruta_base, 'output')
 
     # Obtener la opción seleccionada por el usuario
-    columns, rows = choose_division()
-
+    #columns, rows = choose_division()
+    columns, rows = c,r
     # Ejecutar el programa principal
     run_program(columns, rows, ruta_base, screenshots_dir, output_dir)
 
