@@ -16,17 +16,17 @@ def generar_sonido(frecuencia=440, duracion=1.0, volumen=0.5, sample_rate=44100)
 # Función para guardar el sonido en formato WAV
 def guardar_sonido_wav(sonido, archivo, sample_rate=44100):
     with wave.open(archivo, 'wb') as wav_file:
-        wav_file.setnchannels(1)  # Mono (1 canal), o estéreo (2 canales) si quieres agregar spatial audio
+        wav_file.setnchannels(1)  # Mono (1 canal)
         wav_file.setsampwidth(2)  # 16 bits por muestra
         wav_file.setframerate(sample_rate)
         wav_file.writeframes((sonido * 32767).astype(np.int16).tobytes())  # Convertir a 16-bit PCM
 
-# Generar y guardar 9 sonidos con diferentes frecuencias
-frecuencias = [440, 550, 660, 770, 880, 990, 1100, 1210, 1320]  # Añadidas tres nuevas frecuencias
-volumen = 0.5  # Volumen común para los 9 sonidos
+# Generar y guardar 12 sonidos con diferentes frecuencias
+frecuencias = [440, 523, 587, 659, 698, 784, 880, 988, 1047, 1175, 1319, 1397]  # 12 frecuencias
+volumen = 0.5  # Volumen común para los 12 sonidos
 duracion = 7.0  # Duración en segundos
 
-for i in range(9):
+for i in range(12):
     sonido = generar_sonido(frecuencia=frecuencias[i], duracion=duracion, volumen=volumen)
     archivo_salida = f"sounds/sonido_{i+1}.wav"  # Ruta de guardado en la carpeta sounds
     guardar_sonido_wav(sonido, archivo_salida)

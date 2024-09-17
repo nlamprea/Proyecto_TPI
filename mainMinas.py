@@ -29,9 +29,20 @@ RED = (255, 0, 0)
 
 # Cargar sonidos
 pygame.mixer.init()
-sounds = [pygame.mixer.Sound(f"sounds/soundsB/sonido_{i+1}.wav") for i in range(9)]
+#sounds = [pygame.mixer.Sound(f"sounds/sonido_{i+1}.wav") for i in range(9)]
+sounds = [
+        pygame.mixer.Sound(ruta_base + '/sounds/sonido_1.wav'),
+        pygame.mixer.Sound(ruta_base + '/sounds/sonido_2.wav'),
+        pygame.mixer.Sound(ruta_base + '/sounds/sonido_3.wav'),
+        pygame.mixer.Sound(ruta_base + '/sounds/sonido_4.wav'),
+        pygame.mixer.Sound(ruta_base + '/sounds/sonido_5.wav'),
+        pygame.mixer.Sound(ruta_base + '/sounds/sonido_6.wav'),
+        pygame.mixer.Sound(ruta_base + '/sounds/sonido_7.wav'),
+        pygame.mixer.Sound(ruta_base + '/sounds/sonido_8.wav'),
+        pygame.mixer.Sound(ruta_base + '/sounds/sonido_9.wav')
+    ]
 channels = [pygame.mixer.Channel(i) for i in range(9)]  # Asignar un canal para cada sonido
-explosion_sound = pygame.mixer.Sound('sounds/soundsB/explosion.wav')
+explosion_sound = pygame.mixer.Sound(ruta_base + '/sounds/explosion.wav')
 channel1 = pygame.mixer.Channel(0)
 # Configurar la pantalla
 screen = pygame.display.set_mode((WIDTH, HEIGHT))

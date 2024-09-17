@@ -2,18 +2,18 @@ import time
 import pygame
 import pyautogui
 import keyboard
-
 import cv2
 import easyocr
 import matplotlib.pyplot as plt
 from gtts import gTTS
 import os
 
-ruta_base =         os.path.dirname(os.path.abspath(__file__))
-screenshots_dir =   os.path.join(ruta_base, 'screenshot')
-output_dir =         os.path.join(ruta_base, 'output')
+ruta_base = os.path.dirname(os.path.abspath(__file__))
+screenshots_dir = os.path.join(ruta_base, 'screenshot')
+output_dir = os.path.join(ruta_base, 'output')
 
 numS = 1
+
 # Inicializar Pygame
 pygame.init()
 
@@ -30,158 +30,115 @@ BLACK = (0, 0, 0)
 # Inicializar el mezclador de sonido de Pygame
 pygame.mixer.init()
 
-# Cargar sonidos
-sound1 = pygame.mixer.Sound(ruta_base+'/sounds/sonido_1.wav')
-sound2 = pygame.mixer.Sound(ruta_base+'/sounds/sonido_2.wav')
-sound3 = pygame.mixer.Sound(ruta_base+'/sounds/sonido_3.wav')
-sound4 = pygame.mixer.Sound(ruta_base+'/sounds/sonido_4.wav')
-sound5 = pygame.mixer.Sound(ruta_base+'/sounds/sonido_5.wav')
-sound6 = pygame.mixer.Sound(ruta_base+'/sounds/sonido_6.wav')
+# Cargar sonidos (hasta 12 sonidos)
+sounds = [pygame.mixer.Sound(f"sounds/sonido_{i+1}.wav") for i in range(12)]
 
-# Usamos un canal de audio para poder ajustar el balance estéreo
+# Usamos un canal de audio para ajustar el balance estéreo
 channel = pygame.mixer.Channel(0)
 
-# Definir las secciones de la pantalla
-section_width = screen_width // 3
-section_height = screen_height // 2
+# Definir las opciones de divisiones disponibles
+divisions_options = {
+    "1x2": (1, 2),
+    "2x2": (2, 2),
+    "2x3": (2, 3),
+    "3x2": (3, 2),
+    "3x3": (3, 3),
+    "3x4": (3, 4),
+    "4x3": (4, 3)
+}
 
+# Función para que el usuario elija la división
+def choose_division():
+    print("Seleccione la división de la pantalla:")
+    for option in divisions_options.keys():
+        print(f"- {option}")
+    choice = input("Ingrese su opción (ej. '3x2'): ")
+    return divisions_options.get(choice, (3, 2))  # Por defecto 3x2
 
-def play_sound_based_on_mouse(mouse_x, mouse_y, soundSection):
+# Obtener la opción seleccionada por el usuario
+columns, rows = choose_division()
 
-    # Normalizar la posición x del mouse a un rango de [-1, 1]
+# Calcular las dimensiones de las secciones
+section_width = screen_width // columns
+section_height = screen_height // rows
+
+def play_sound_based_on_mouse(mouse_x, mouse_y, sound_index):
     x = (mouse_x / screen_width) * 2 - 1  # Izquierda = -1, Derecha = 1
-
-    # Normalizar la posición y del mouse a un rango de [0, 1] (para simular distancia)
     y = mouse_y / screen_height  # Arriba = cercano, Abajo = lejano
 
-    # Controlar el balance estéreo en función de la posición en el eje X
     left_volume = max(0, 1 - x)
     right_volume = max(0, 1 + x)
 
-    # Reducir volumen en función de la distancia (simulación simple en Y)
-    distance_factor = max(0.1, 1 - y)  # Para no dejar el volumen a cero
+    distance_factor = max(0.1, 1 - y)
 
-    # Ajustar el volumen para el balance estéreo
     channel.set_volume(left_volume * distance_factor, right_volume * distance_factor)
 
-    # Reproducir el sonido en el canal
-    if not channel.get_busy():  # Si el canal no está reproduciendo, reproducir el sonido
-        channel.play('sound'+soundSection)
+    if not channel.get_busy():
+        channel.play(sounds[sound_index])
 
-
-# Variable para guardar el sonido activo
 current_sound = None
 
+# Actualizar la función get_section para trabajar con diferentes divisiones
 def get_section(x, y):
-    if y < section_height:
-        if x < section_width:
-            return 1
-        elif x < 2 * section_width:
-            return 2
-        else:
-            return 3
-    else:
-        if x < section_width:
-            return 4
-        elif x < 2 * section_width:
-            return 5
-        else:
-            return 6
+    col = x // section_width
+    row = y // section_height
+    return row * columns + col + 1  # Devuelve el número de la sección
 
 def play_sound(section):
     global current_sound
 
-    # Detener el sonido actual si existe
     if current_sound:
         current_sound.stop()
 
-    # Asignar y reproducir el nuevo sonido en bucle
-    if section == 1:
-        current_sound = sound1
-    elif section == 2:
-        current_sound = sound2
-    elif section == 3:
-        current_sound = sound3
-    elif section == 4:
-        current_sound = sound4
-    elif section == 5:
-        current_sound = sound5
-    elif section == 6:
-        current_sound = sound6
-
-    # Reproducir el sonido en bucle (loops=-1 para bucle indefinido)
-    current_sound.play(loops=-1)
+    # Reproducir el sonido correspondiente a la sección (hasta 12 secciones)
+    if 1 <= section <= 12:
+        current_sound = sounds[section - 1]  # El índice es 0-based
+        current_sound.play(loops=-1)
 
 def num_Global():
     global numS
-    # Directorio de capturas de pantalla existe
     os.makedirs(screenshots_dir, exist_ok=True)
     
-    #numS = 1
     while os.path.exists(os.path.join(screenshots_dir, f'screenshot_{numS}.png')):
-        numS += 1  
-        
+        numS += 1
+    
     return numS
 
 def take_screenshot(x, y, section_width, section_height):
-       
     numS = num_Global()
     left = (x // section_width) * section_width
     top = (y // section_height) * section_height
     width = section_width
     height = section_height
     screenshot = pyautogui.screenshot(region=(left, top, width, height))
-    screenshot.save(screenshots_dir+f'/screenshot_{numS}.png')
-    
-    
+    screenshot.save(screenshots_dir + f'/screenshot_{numS}.png')
+
 def audioScreenshot():
-    
     num = num_Global() - 1
-    print(num)
-    # directorios existen
     os.makedirs(screenshots_dir, exist_ok=True)
     os.makedirs(output_dir, exist_ok=True)
-    
+
     archivo_screenshot = os.path.join(screenshots_dir, f'screenshot_{num}.png')
 
     if os.path.exists(archivo_screenshot):
         res_list = []
-
         reader = easyocr.Reader(["es"], gpu=False)
         image = cv2.imread(archivo_screenshot)
-
         result = reader.readtext(image, paragraph=False)
 
         for res in result:
-            print("res:", res)
-            pt0 = res[0][0]
-            pt1 = res[0][1]
-            pt2 = res[0][2]
-            pt3 = res[0][3]
             res_list.append(res[1])
 
         words_string = " ".join(res_list)
-        #Imprimir la cadena de texto resultante
-        print("Contenido de words_string:")
-        print(words_string)
-
         language = 'es'
-
-        #Crea el objeto gTTS
         speech = gTTS(text=words_string, lang=language, slow=False)
 
-        #Guarda el archivo de audio
         output_file = output_dir + "output.mp3"
-        
         if os.path.exists(output_file):
             os.remove(output_file)
         
         speech.save(output_file)
-
-        #Reproduce el archivo de audio (opcional)
         os.system(f"start {output_file}")
-    
-
 
 running = True
 last_section = 0
@@ -191,59 +148,36 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-
-    # Detectar combinación de teclas Ctrl+Shift+S para tomar captura de pantalla
     if keyboard.is_pressed('ctrl+shift+f'):
         x, y = pyautogui.position()
         take_screenshot(x, y, section_width, section_height)
         print("Captura de pantalla tomada.")
-        
+
     if keyboard.is_pressed('ctrl+j'):
         audioScreenshot()
-        print("Ouput.")
+        print("Output.")
 
-    # Detectar la combinación de teclas Ctrl+E para salir del programa
     if keyboard.is_pressed('ctrl+e'):
         print("Programa finalizado por el usuario.")
         running = False
-            
-    # Obtener la posición actual del mouse
+
     mouse_x, mouse_y = pygame.mouse.get_pos()
-    
-    # Obtener la posición actual del mouse
     x, y = pyautogui.position()
     section = get_section(x, y)
 
     if section != last_section:
         last_section = section
         play_sound(section)
-        play_sound_based_on_mouse(mouse_x, mouse_y,section)
+        play_sound_based_on_mouse(mouse_x, mouse_y, section - 1)  # El índice es 0-based
         print(f"Sección: {section}")
-        
-    
 
-    # Dibujar las secciones en la pantalla
     screen.fill(WHITE)
-    pygame.draw.line(screen, BLACK, (section_width, 0), (section_width, screen_height), 5)
-    pygame.draw.line(screen, BLACK, (2 * section_width, 0), (2 * section_width, screen_height), 5)
-    pygame.draw.line(screen, BLACK, (0, section_height), (screen_width, section_height), 5)
 
-    # Mostrar el número de la sección en el centro de cada sección
-    font = pygame.font.Font(None, 74)
-    for i in range(1, 7):
-        text = font.render(str(i), True, BLACK)
-        if i == 1:
-            screen.blit(text, (section_width // 2 - text.get_width() // 2, section_height // 2 - text.get_height() // 2))
-        elif i == 2:
-            screen.blit(text, (3 * section_width // 2 - text.get_width() // 2, section_height // 2 - text.get_height() // 2))
-        elif i == 3:
-            screen.blit(text, (5 * section_width // 2 - text.get_width() // 2, section_height // 2 - text.get_height() // 2))
-        elif i == 4:
-            screen.blit(text, (section_width // 2 - text.get_width() // 2, 3 * section_height // 2 - text.get_height() // 2))
-        elif i == 5:
-            screen.blit(text, (3 * section_width // 2 - text.get_width() // 2, 3 * section_height // 2 - text.get_height() // 2))
-        elif i == 6:
-            screen.blit(text, (5 * section_width // 2 - text.get_width() // 2, 3 * section_height // 2 - text.get_height() // 2))
+    # Dibujar líneas de separación
+    for i in range(1, columns):
+        pygame.draw.line(screen, BLACK, (i * section_width, 0), (i * section_width, screen_height), 5)
+    for j in range(1, rows):
+        pygame.draw.line(screen, BLACK, (0, j * section_height), (screen_width, j * section_height), 5)
 
     pygame.display.flip()
     time.sleep(0.1)
