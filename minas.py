@@ -31,6 +31,12 @@ explosion_sound = pygame.mixer.Sound('sounds/soundsB/explosion.wav')
 # Inicializar canales de sonido
 channel = pygame.mixer.Channel(0)
 
+
+# Estados iniciales
+revealed = [[False for _ in range(COLS)] for _ in range(ROWS)]
+sound_grid = [[None for _ in range(COLS)] for _ in range(ROWS)]  # Grilla que contiene los índices de sonido
+first_click = False  # Para determinar si ya se hizo el primer clic
+
 # Crear una matriz de minas y números
 mines = [[0 for _ in range(COLS)] for _ in range(ROWS)]
 revealed = [[False for _ in range(COLS)] for _ in range(ROWS)]
@@ -41,6 +47,24 @@ mines_pos = random.sample([(r, c) for r in range(ROWS) for c in range(COLS)], NU
 
 for r, c in mines_pos:
     mines[r][c] = -1  # -1 representa una mina
+
+
+# Función para asignar sonidos a la grilla alrededor de la central
+def assign_sounds_to_grid(center_row, center_col):
+    # Lista de sonidos en el orden especificado
+    sound_order = [2, 3, 4, 5, 1, 6, 7, 8, 9]
+
+    directions = [(-1, -1), (-1, 0), (-1, 1),  # Filas superiores
+                  (0, -1),  (0, 0),  (0, 1),  # Fila del medio
+                  (1, -1),  (1, 0),  (1, 1)]  # Filas inferiores
+
+    # Asignar sonidos a las celdas alrededor del centro
+    for idx, (dr, dc) in enumerate(directions):
+        new_row = center_row + dr
+        new_col = center_col + dc
+        if 0 <= new_row < ROWS and 0 <= new_col < COLS:
+            sound_grid[new_row][new_col] = sound_order[idx]
+
 
 # Calcular los números que indican cuántas minas hay alrededor de cada celda
 def calculate_mines_around():
@@ -74,6 +98,7 @@ def draw_grid():
             else:
                 pygame.draw.rect(screen, DARK_GRAY, rect)
             pygame.draw.rect(screen, BLACK, rect, 2)
+
 
 # Reproducir sonido espacial basado en la posición del mouse
 def play_sound_based_on_mouse(mouse_x, mouse_y, sound):
@@ -126,6 +151,26 @@ def is_mouse_inside_window(mouse_x, mouse_y):
     else:
         return False
 
+
+# Función para manejar clics en la grilla
+def handle_click(pos):
+    global first_click
+
+    x, y = pos
+    row = y // CELL_SIZE
+    col = x // CELL_SIZE
+
+    # Si es el primer clic, configurar los sonidos en torno a la grilla seleccionada
+    if not first_click:
+        assign_sounds_to_grid(row, col)
+        first_click = True
+
+    # Si la celda tiene un sonido asignado y no ha sido revelada
+    if sound_grid[row][col] is not None and not revealed[row][col]:
+        revealed[row][col] = True
+        sound_index = sound_grid[row][col] - 1  # Ajuste para índice de lista de sonidos
+        sounds[sound_index].play()
+
 # Main loop
 running = True
 last_cell = (-1, -1)  # Para evitar repetir el sonido al quedarse en la misma celda
@@ -157,9 +202,9 @@ while running:
         row, col = get_cell_under_mouse()
         
         # Solo reproducir sonido si el mouse está en una nueva celda
-        if (row, col) != last_cell and 0 <= row < ROWS and 0 <= col < COLS:
-            play_sound_based_on_mouse(mouse_x, mouse_y, sounds[mines[row][col]])
-            last_cell = (row, col)  # Actualizar la última celda visitada
+
+        play_sound_based_on_mouse(mouse_x, mouse_y, sounds[mines[row][col]])
+        last_cell = (row, col)  # Actualizar la última celda visitada
     else:
         if mouse_inside_window:  # Si el mouse acaba de salir de la ventana
             channel.stop()  # Detenemos el sonido
