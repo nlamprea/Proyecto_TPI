@@ -3,8 +3,9 @@ from tkinter import PhotoImage
 
 import os
 
-import screenMain
+import mainMinas
 import a
+import pingpong
 
 # Función para ejecutar un archivo .py
 def ejecutar_archivo(nombre_archivo):
@@ -59,11 +60,13 @@ estilo_boton = {
 
 # Botones
 boton1 = tk.Button(ventana, text="Pantalla dividida", command=lambda: a.main(), **estilo_boton)
-boton1.pack(pady=10)
+boton1.pack(pady=5)
 
-boton2 = tk.Button(ventana, text="Busca minas", command=lambda: screenMain.mainMina(), **estilo_boton)
-boton2.pack(pady=10)
+boton2 = tk.Button(ventana, text="Busca minas", command=lambda: mainMinas.mainmines(), **estilo_boton)
+boton2.pack(pady=5)
 
+boton3 = tk.Button(ventana, text="ping pong", command=lambda: pingpong.mainpingpong(), **estilo_boton)
+boton3.pack(pady=5)
 # Botón para salir
 boton_salir = tk.Button(ventana, text="Salir", command=cerrar_aplicacion, bg="#ff1a1a", fg="white", font=("Arial", 14, "bold"), relief="raised", bd=4, width=20, height=2)
 boton_salir.pack(pady=20)

@@ -1,5 +1,5 @@
 import tkinter as tk
-import screenMain
+import ScreenMain
 
 def main():
     # Configurar la ventana
@@ -29,28 +29,28 @@ def main():
     boton_tamaño = 5  # Tamaño del botón en unidades (no en píxeles)
 
     # Crear los botones en una disposición 2x4
-    boton1 = tk.Button(marco, text="1x2", command=lambda: screenMain.mainScreen(1, 2), width=boton_tamaño, height=boton_tamaño)
+    boton1 = tk.Button(marco, text="1x2", command=lambda: ScreenMain.mainScreen(1, 2), width=boton_tamaño, height=boton_tamaño)
     boton1.grid(row=0, column=0, padx=20, pady=20)
 
-    boton2 = tk.Button(marco, text="2x1", command=lambda: screenMain.mainScreen(2, 1), width=boton_tamaño, height=boton_tamaño)
+    boton2 = tk.Button(marco, text="2x1", command=lambda: ScreenMain.mainScreen(2, 1), width=boton_tamaño, height=boton_tamaño)
     boton2.grid(row=0, column=1, padx=20, pady=20)
 
-    boton3 = tk.Button(marco, text="2x2", command=lambda: screenMain.mainScreen(2, 2), width=boton_tamaño, height=boton_tamaño)
+    boton3 = tk.Button(marco, text="2x2", command=lambda: ScreenMain.mainScreen(2, 2), width=boton_tamaño, height=boton_tamaño)
     boton3.grid(row=0, column=2, padx=20, pady=20)
 
-    boton4 = tk.Button(marco, text="2x3", command=lambda: screenMain.mainScreen(2, 3), width=boton_tamaño, height=boton_tamaño)
+    boton4 = tk.Button(marco, text="2x3", command=lambda: ScreenMain.mainScreen(2, 3), width=boton_tamaño, height=boton_tamaño)
     boton4.grid(row=0, column=3, padx=20, pady=20)
 
-    boton5 = tk.Button(marco, text="3x2", command=lambda: screenMain.mainScreen(3, 2), width=boton_tamaño, height=boton_tamaño)
+    boton5 = tk.Button(marco, text="3x2", command=lambda: ScreenMain.mainScreen(3, 2), width=boton_tamaño, height=boton_tamaño)
     boton5.grid(row=1, column=0, padx=20, pady=20)
 
-    boton6 = tk.Button(marco, text="3x3", command=lambda: screenMain.mainScreen(3, 3), width=boton_tamaño, height=boton_tamaño)
+    boton6 = tk.Button(marco, text="3x3", command=lambda: ScreenMain.mainScreen(3, 3), width=boton_tamaño, height=boton_tamaño)
     boton6.grid(row=1, column=1, padx=20, pady=20)
 
-    boton7 = tk.Button(marco, text="3x4", command=lambda: screenMain.mainScreen(3, 4), width=boton_tamaño, height=boton_tamaño)
+    boton7 = tk.Button(marco, text="3x4", command=lambda: ScreenMain.mainScreen(3, 4), width=boton_tamaño, height=boton_tamaño)
     boton7.grid(row=1, column=2, padx=20, pady=20)
 
-    boton8 = tk.Button(marco, text="4x3", command=lambda: screenMain.mainScreen(4, 3), width=boton_tamaño, height=boton_tamaño)
+    boton8 = tk.Button(marco, text="4x3", command=lambda: ScreenMain.mainScreen(4, 3), width=boton_tamaño, height=boton_tamaño)
     boton8.grid(row=1, column=3, padx=20, pady=20)
 
     boton_salir = tk.Button(ventana, text="Salir", command=cerrar_aplicacion, bg="#ff1a1a", fg="white", font=("Arial", 14, "bold"), relief="raised", bd=4, width=20, height=2)
